@@ -19,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-// import apple.laf.JRSUIConstants.Direction;
-
 import org.springframework.http.HttpStatus;
 
 
@@ -59,7 +57,7 @@ public ResponseEntity<List<Product>> getProductsByPrice(@RequestParam float star
 	return new ResponseEntity<List<Product>>(productRepository.findByPriceBetween(start, end), HttpStatus.OK);
 }
 
-@GetMapping
+@GetMapping("/products/sortpage")
 Page<Product> getProducts(
 	@RequestParam Optional<Integer> page,
 	@RequestParam Optional<String> sortBy,
@@ -67,8 +65,10 @@ Page<Product> getProducts(
 	
 ){
 	Sort.Direction dir=Sort.Direction.ASC;
-	if (sortOrder.equals(1)){
-		dir=Sort.Direction.DESC;
+	if(sortOrder.isPresent()){
+		if (sortOrder.get().equals(1)){
+			dir=Sort.Direction.DESC;
+		}
 	}
 	return productRepository.findAll(
 	PageRequest.of(
