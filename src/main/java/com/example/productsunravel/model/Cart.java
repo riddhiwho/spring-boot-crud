@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @Entity
@@ -18,7 +20,7 @@ public class Cart {
     @Column(name = "created_at")
     private Date createdAt;
 
-    // @OneToMany
+    @ManyToOne(targetEntity=Product.class, fetch=FetchType.EAGER)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
@@ -45,13 +47,20 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Product product, int quantity, User user){
+    public Cart(int quantity, Product product, User user){
         this.user = user;
         this.product = product;
         this.quantity = quantity;
         this.createdAt = new Date();
     }
 
+
+    // public Cart(Product product, int qty, User user) {
+    //     this.product = product;
+    //     this.user = user;
+    //     this.quantity = quantity;
+    //     this.createdAt = new Date();
+    // }
 
     public Integer getId() {
         return id;
