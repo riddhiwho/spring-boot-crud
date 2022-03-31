@@ -30,7 +30,9 @@ public class CartController {
 
     @Autowired
     CartRepository cartRepository;
+    @Autowired
     ProductRepository productRepository;
+    @Autowired
     UserRepository userRepository;
 
     // public void addToCart(Cartreq cartreq, Product product, User user){
@@ -38,17 +40,28 @@ public class CartController {
     //     cartRepository.save(cart);
     // }
 
+    // @Autowired
+    // public CartController(ProductRepository productRepository, CartRepository cartRepository, UserRepository userRepository){
+    //     this.productRepository=productRepository;
+    //     this.cartRepository=cartRepository;
+    //     this.userRepository=userRepository;
+    // }
+
+    public void addToCart(Cartreq cartreq, Product product, User user){
+        Cart cart = new Cart(product, cartreq.getQty(), user);
+        cartRepository.save(cart);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addToCart(@Valid @RequestBody Cartreq cartreq) {
 
         try{
             Optional<Product> product = productRepository.findById(cartreq.getProductId());
-            if(product==null){
-                return null;
-            }
-            
+            // System.out.println(product.isPresent());
+            Optional<User> user = userRepository.findById(cartreq.getUserId());
             if(product.get().getCount()>=cartreq.getQty()){
                 System.out.println("prod available");
+                addToCart(cartreq, product, user);
             }else{
                 System.out.println("prod not available");
             }
@@ -58,6 +71,9 @@ public class CartController {
 
 
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Added to cart"), HttpStatus.CREATED);
+    }
+
+    private static void addToCart(@Valid Cartreq cartreq, Optional<Product> product, Optional<User> user) {
     }
 
 

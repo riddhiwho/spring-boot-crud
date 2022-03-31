@@ -102,6 +102,7 @@ public Product getProductById(@PathVariable(value = "id") Long productId) {
     return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
 }
 
+
 @GetMapping("/products/categorycount")
 public List<Object[]> getProductBd() {
     return productRepository.countCustomersByType();
