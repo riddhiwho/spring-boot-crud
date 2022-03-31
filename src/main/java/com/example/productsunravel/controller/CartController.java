@@ -1,0 +1,101 @@
+package com.example.productsunravel.controller;
+
+import com.example.productsunravel.model.Cart;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
+
+import com.example.productsunravel.common.ApiResponse;
+// import com.example.productsunravel.dto.cart.AddToCartDto;
+import com.example.productsunravel.exception.ResourceNotFoundException;
+import com.example.productsunravel.model.Product;
+import com.example.productsunravel.model.User;
+import com.example.productsunravel.repository.CartRepository;
+import com.example.productsunravel.repository.ProductRepository;
+import com.example.productsunravel.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+
+
+@RestController
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    CartRepository cartRepository;
+    ProductRepository productRepository;
+    UserRepository userRepository;
+
+    // public void addToCart(Cartreq cartreq, Product product, User user){
+    //     Cart cart = new Cart(product, cartreq.getQty(), user);
+    //     cartRepository.save(cart);
+    // }
+
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> addToCart(@Valid @RequestBody Cartreq cartreq) {
+
+        try{
+            Optional<Product> product = productRepository.findById(cartreq.getProductId());
+            if(product==null){
+                return null;
+            }
+            
+            if(product.get().getCount()>=cartreq.getQty()){
+                System.out.println("prod available");
+            }else{
+                System.out.println("prod not available");
+            }
+        }catch(NullPointerException e){
+            System.out.println("NULLLLL POINTER EXCEPTION");
+        }
+
+
+        return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Added to cart"), HttpStatus.CREATED);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     @PutMapping("/add")
+//     public void addToCart(@Valid @RequestBody Cartreq cartreq) {
+//         if(cartreq==null){
+//             System.out.println("*****CARTREQ IS NULLLL*******");
+//         }else{
+//         Product product = productRepository.findById(cartreq.getProductId()).get();
+//         if (product.getCount()>=cartreq.getQty()){
+//             System.out.println("product available");
+//         }else{
+//             System.out.println("product unavailable");
+//         }
+//         // // Cart cart = cartRepository.
+//         // // find cart which has a user id() and isActive=true;
+//         // Cart cart = cartRepository.findByUserIdAndIsActive(true);
+// //         // System.out.println(cart);
+        
+// //         }
+//         // return ResponseEntity.ok(cart);
+
+//     }
+    
+    
+}

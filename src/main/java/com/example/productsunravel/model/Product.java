@@ -1,6 +1,9 @@
 package com.example.productsunravel.model;
 import java.io.Serializable;
 import javax.persistence.Entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 
@@ -8,13 +11,14 @@ import javax.persistence.*;
 @Table(name="products")
 @EntityListeners(AuditingEntityListener.class)
 public class Product implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable=false, updatable = true)
     private String name;
-
+    
     @Column(nullable=false, updatable = true)
     private float price;
 
