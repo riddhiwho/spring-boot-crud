@@ -2,8 +2,6 @@ package com.example.productsunravel.model;
 import java.io.Serializable;
 import javax.persistence.Entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 

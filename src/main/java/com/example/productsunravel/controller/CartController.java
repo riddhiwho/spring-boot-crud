@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.productsunravel.common.ApiResponse;
-// import com.example.productsunravel.dto.cart.AddToCartDto;
-import com.example.productsunravel.exception.ResourceNotFoundException;
 import com.example.productsunravel.model.Product;
 import com.example.productsunravel.model.User;
 import com.example.productsunravel.repository.CartRepository;
@@ -31,23 +29,20 @@ import javax.validation.Valid;
 @RequestMapping("/cart")
 public class CartController {
 
-    @Autowired
+    // @Autowired
     CartRepository cartRepository;
-    @Autowired
+    // @Autowired
     ProductRepository productRepository;
-    @Autowired
+    // @Autowired
     UserRepository userRepository;
 
-    // public void addToCart(Cartreq cartreq, Product product, User user){
-    //     Cart cart = new Cart(product, cartreq.getQty(), user);
-    //     cartRepository.save(cart);
-    // }
+    @Autowired
+    public CartController(ProductRepository productRepository, CartRepository cartRepository, UserRepository userRepository){
+        this.productRepository=productRepository;
+        this.cartRepository=cartRepository;
+        this.userRepository=userRepository;
+    }
 
-    // private void addToCart(@Valid Cartreq cartreq, Optional<Product> product, Optional<User> user) {
-    //     // Cart cart = new Cart(product.get(), cartreq.getQty(), user.get());
-
-    //     cartRepository.save(cart);
-    // }
     public void addToCart(Cartreq cartreq, Optional<Product> product, Optional<User> user){
         Cart cart = new Cart();
         cart.setIsActive(true);
@@ -57,18 +52,7 @@ public class CartController {
         cart.setCreatedAt(new Date());
         cartRepository.save(cart);
     }
-    // @Autowired
-    // public CartController(ProductRepository productRepository, CartRepository cartRepository, UserRepository userRepository){
-    //     this.productRepository=productRepository;
-    //     this.cartRepository=cartRepository;
-    //     this.userRepository=userRepository;
-    // }
-    // private static void addToCart(@Valid Cartreq cartreq, Optional<Product> product, Optional<User> user) {
-    //     Cart cart = new Cart(product.get(), cartreq.getQty(), user.get());
-    //     cartRepository.save(cart);
-    // }
-
-
+   
 
 
     @PostMapping("/add")
@@ -92,10 +76,24 @@ public class CartController {
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Added to cart"), HttpStatus.CREATED);
     }
 
-//    @GetMapping("/fetch")
-//    public ResponseEntity<ApiResponse> fetchFromCart(@Valid @RequestParam Long productId){
 
-//    }
+    @PatchMapping("/update/{id}/{quantity}")
+public ResponseEntity<ApiResponse> updateCart(@PathVariable(value="id") Integer cartId, @PathVariable(value="quantity") int quantity) {
+	try {
+		Cart cart = cartRepository.findById(cartId).get();
+		cart.setQuantity(quantity);
+        Long productId = cart.getProduct().getId();
+        Product p = productRepository.findById(productId).get();
+        if(p.getCount()-quantity>=0){
+            cartRepository.save(cart);
+            return new ResponseEntity<ApiResponse>(new ApiResponse(true, "cart updated"), HttpStatus.OK);
+        }
+        return new ResponseEntity<ApiResponse>(new ApiResponse(true, "product not available"), HttpStatus.OK);
+	} catch (Exception e) {
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}
+
     @GetMapping("/fetch/{id}")
     public List<Cart> getCartById(@PathVariable(value = "id") Integer userId) {
         try{
@@ -103,50 +101,18 @@ public class CartController {
         }catch(Exception e){
             e.printStackTrace();
         }
-    // return cartRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Product", "id", userId));
         return null;
     }
     
-// @GetMapping("/products/{id}")
-// public Product getProductById(@PathVariable(value = "id") Long productId) {
-//     return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     @PutMapping("/add")
-//     public void addToCart(@Valid @RequestBody Cartreq cartreq) {
-//         if(cartreq==null){
-//             System.out.println("*****CARTREQ IS NULLLL*******");
-//         }else{
-//         Product product = productRepository.findById(cartreq.getProductId()).get();
-//         if (product.getCount()>=cartreq.getQty()){
-//             System.out.println("product available");
-//         }else{
-//             System.out.println("product unavailable");
-//         }
-//         // // Cart cart = cartRepository.
-//         // // find cart which has a user id() and isActive=true;
-//         // Cart cart = cartRepository.findByUserIdAndIsActive(true);
-// //         // System.out.println(cart);
-        
-// //         }
-//         // return ResponseEntity.ok(cart);
-
-//     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteCart(@PathVariable(value="id") Integer cartId){
+        Optional<Cart> cart = cartRepository.findById(cartId);
+        if(cart==null){
+            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "ID does not exist"), HttpStatus.OK);
+        }
+        cartRepository.delete(cart.get());
+        return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Deleted from cart"), HttpStatus.OK);
+    }
     
     
 }

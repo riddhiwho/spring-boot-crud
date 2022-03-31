@@ -1,15 +1,5 @@
 package com.example.productsunravel.controller;
 
-import java.beans.JavaBean;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-// import org.springframework.web.bind.annotation.RestController;
-
 public class Cartreq {
     private Long productId;
     private Integer userId;

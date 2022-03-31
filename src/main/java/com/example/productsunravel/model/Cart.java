@@ -55,13 +55,6 @@ public class Cart {
     }
 
 
-    // public Cart(Product product, int qty, User user) {
-    //     this.product = product;
-    //     this.user = user;
-    //     this.quantity = quantity;
-    //     this.createdAt = new Date();
-    // }
-
     public Integer getId() {
         return id;
     }
@@ -102,11 +95,4 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    // public double getTotalAmount() {
-    //     return totalAmount;
-    // }
-
-    // public void setTotalAmount(double totalAmount) {
-    //     this.totalAmount = totalAmount;
-    // }
 }
