@@ -36,7 +36,7 @@ ProductRepository productRepository;
  */
 @GetMapping(value="/status")
 public String status(){
-    return "ok";
+    return "I am ok";
 }
 
 /** 
@@ -169,14 +169,6 @@ public ResponseEntity<Long> deleteNote(@PathVariable(value = "id") Long productI
 
     return ResponseEntity.ok().build();
 }
-
-
-
-
-
-
-
-
 }
 
 

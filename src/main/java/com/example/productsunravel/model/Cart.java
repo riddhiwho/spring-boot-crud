@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 
 @Entity
@@ -24,7 +22,6 @@ public class Cart {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
-    @JsonIgnore
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
